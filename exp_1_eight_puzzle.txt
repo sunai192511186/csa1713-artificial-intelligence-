@@ -1,0 +1,63 @@
+from collections import deque
+
+def solve(start, goal):
+    queue = deque([(start, [])])
+    visited = set()
+
+    while queue:
+        state, path = queue.popleft()
+
+        if state == goal:
+            return path + [state]
+
+        if state in visited:
+            continue
+
+        visited.add(state)
+
+        zero = state.index(0)
+        row = zero // 3
+        col = zero % 3
+
+        moves = []
+
+        if row > 0:
+            moves.append(zero - 3)
+
+        if row < 2:
+            moves.append(zero + 3)
+
+        if col > 0:
+            moves.append(zero - 1)
+
+        if col < 2:
+            moves.append(zero + 1)
+
+        for new_pos in moves:
+            new_state = list(state)
+
+            new_state[zero], new_state[new_pos] = \
+                new_state[new_pos], new_state[zero]
+
+            new_state = tuple(new_state)
+
+            if new_state not in visited:
+                queue.append((new_state, path + [state]))
+
+    return None
+
+
+start = tuple(map(int, input("Enter initial state (0 for blank): ").split()))
+goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+
+solution = solve(start, goal)
+
+if solution:
+    print("\nSolution:")
+    for state in solution:
+        print(state[0:3])
+        print(state[3:6])
+        print(state[6:9])
+        print()
+else:
+    print("No solution found")
