@@ -1,0 +1,42 @@
+
+def color_map(graph, colors, result):
+    if len(result) == len(graph):
+        return True
+
+    node = next(n for n in graph if n not in result)
+
+    for color in colors:
+        safe = True
+
+        for neighbor in graph[node]:
+            if result.get(neighbor) == color:
+                safe = False
+                break
+
+        if safe:
+            result[node] = color
+
+            if color_map(graph, colors, result):
+                return True
+
+            del result[node]
+
+    return False
+
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'C', 'D'],
+    'C': ['A', 'B', 'D'],
+    'D': ['B', 'C']
+}
+
+colors = ['Red', 'Green', 'Blue']
+result = {}
+
+if color_map(graph, colors, result):
+    print("Map Coloring Solution:")
+    for region, color in result.items():
+        print(region, ":", color)
+else:
+    print("No solution found")
