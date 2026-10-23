@@ -1,0 +1,56 @@
+
+import heapq
+
+def astar(graph, heuristic, start, goal):
+    queue = [(heuristic[start], 0, start, [start])]
+    visited = set()
+
+    while queue:
+        f, cost, node, path = heapq.heappop(queue)
+
+        if node == goal:
+            return path, cost
+
+        if node in visited:
+            continue
+
+        visited.add(node)
+
+        for neighbor, distance in graph[node]:
+            if neighbor not in visited:
+                new_cost = cost + distance
+                new_f = new_cost + heuristic[neighbor]
+
+                heapq.heappush(
+                    queue,
+                    (new_f, new_cost, neighbor, path + [neighbor])
+                )
+
+    return None, float('inf')
+
+
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('E', 1)],
+    'D': [('E', 1), ('G', 5)],
+    'E': [('G', 3)],
+    'G': []
+}
+
+heuristic = {
+    'A': 6,
+    'B': 5,
+    'C': 4,
+    'D': 3,
+    'E': 2,
+    'G': 0
+}
+
+path, cost = astar(graph, heuristic, 'A', 'G')
+
+if path:
+    print("Shortest Path:", " -> ".join(path))
+    print("Total Cost:", cost)
+else:
+    print("Path not found")
